@@ -1,0 +1,22 @@
+server:
+  port: 8201
+spring:
+  application:
+    name: temp-monitor
+  security: # 配置登录用户名和密码
+    user:
+      name: temp
+      password: 123456
+  boot:  # 不显示monitor的监控信息
+    admin:
+      discovery:
+        ignored-services: ${spring.application.name}
+# 使用Euerka作为注册中心(客户端)
+# 默认注册中心地址格式：http://${hostname}:${port}/eureka/
+# 注册到需要登录认证的Euerka注册中心时的地址格式：http://${username}:${password}@${hostname}:${port}/eureka/
+eureka:
+  client:
+    register-with-eureka: true # 注册到Eureka的注册中心
+    fetch-registry: true # 获取注册实例列表
+    service-url:
+      defaultZone: http://temp:123456@localhost:8001/eureka/ # 配置注册中心地址

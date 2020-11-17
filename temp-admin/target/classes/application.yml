@@ -1,0 +1,66 @@
+server:
+  port: 8101 # 运行端口号
+# 设置了server.servlet.context-path，Euerka通过serviceId查找服务的时候会报404
+#  servlet:
+#    context-path: /temp-admin
+
+swagger:
+  enabled: true
+
+spring:
+  application:
+    name: temp-admin # 服务名称
+  datasource:
+    url: jdbc:mysql://localhost:3306/hdmall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+# 使用nacos作为注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址
+  boot:
+    admin:
+      client:
+        url: http://localhost:8201 # 配置监控中心地址
+# 使用Consul作为服务注册中心发现配置
+#  cloud:
+#    consul:
+#      host: localhost
+#      port: 8500
+#      discovery:
+#        service-name: ${spring.application.name}
+# 配置收集日志的zipkin-server访问地址：跟踪服务间调用工具
+#  zipkin:
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      probability: 0.1 # 设置Sleuth的抽样收集概率
+
+# 管理健康检查
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+#logging:
+#  file: admin-client.log # 添加开启admin的日志监控
+
+# 使用Euerka作为注册中心(客户端)
+# 默认注册中心地址格式：http://${hostname}:${port}/eureka/
+# 注册到需要登录认证的Euerka注册中心时的地址格式：http://${username}:${password}@${hostname}:${port}/eureka/
+#eureka:
+#  client:
+#    register-with-eureka: true # 注册到Eureka的注册中心
+#    fetch-registry: true # 获取注册实例列表
+#    service-url:
+#      defaultZone: http://temp:123456@localhost:8001/eureka/ # 配置注册中心地址
+
+

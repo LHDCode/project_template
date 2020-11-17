@@ -1,0 +1,54 @@
+server:
+  port: 8103
+# 设置了server.servlet.context-path，Euerka通过serviceId查找服务的时候会报404
+#  servlet:
+#    context-path: /temp-xx-service
+spring:
+  application:
+    name: temp-xx-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/hdmall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+# 使用nacos作为注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址
+# 使用Consul作为服务注册中心发现配置
+#  cloud:
+#    consul:
+#      host: localhost
+#      port: 8500
+#      discovery:
+#        service-name: ${spring.application.name}
+# 管理健康检查
+management:
+  health:
+    redis:
+      enabled: false
+# 配置收集日志的zipkin-server访问地址
+#  zipkin:
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      probability: 0.1 # 设置Sleuth的抽样收集概率
+
+# 使用Euerka作为注册中心(客户端)
+# 默认注册中心地址格式：http://${hostname}:${port}/eureka/
+# 注册到需要登录认证的Euerka注册中心时的地址格式：http://${username}:${password}@${hostname}:${port}/eureka/
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://temp:123456@localhost:8001/eureka/
+
+service-url:
+  user-service: http://temp-admin # 使用 Ribbon + restTemplate 实现远程调用的服务地址
+feign:
+  hystrix:
+    enabled: true # 在Feign中开启Hystrix
+logging:
+  level:
+    com.hd.temp.user.api.service.UserService: debug # 配置UserService的日志级别为debug。

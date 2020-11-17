@@ -1,0 +1,26 @@
+server:
+  port: 8802
+spring:
+  profiles:
+    active: dev
+  application:
+    name: temp-auth
+  # redis相关配置
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+    password: powersi@redis # 有密码时设置
+  # 采用Nacos作为注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

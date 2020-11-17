@@ -1,0 +1,94 @@
+server:
+  port: 8801
+spring:
+  profiles:
+    active: dev
+  application:
+    name: temp-gateway
+# 使用SpringCloud GateWay作为API网关
+  cloud:
+    # 使用Nacos作为注册中心
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+    gateway:
+      routes: #配置路由路径
+        - id: temp-auth
+          uri: lb://temp-auth
+          predicates:
+            - Path=/temp-auth/**
+          filters:
+            - StripPrefix=1
+        - id: temp-admin
+          uri: lb://temp-admin
+          predicates:
+            - Path=/temp-admin/**
+          filters:
+            - StripPrefix=1
+        - id: temp-search
+          uri: lb://temp-search
+          predicates:
+            - Path=/temp-search/**
+          filters:
+            - StripPrefix=1
+        - id: temp-xx-service
+          uri: lb://temp-xx-service
+          predicates:
+            - Path=/mtemp-xx-service/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心动态创建路由的功能
+          lower-case-service-id: true # 用小写服务名，默认是大写
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8201/mall-auth/rsa/publicKey' #配置RSA的公钥访问地址
+  redis:
+    database: 0
+    port: 6379
+    host: localhost
+    password: powersi@redis
+secure:
+  ignore:
+    urls: #配置白名单路径
+      - "/actuator/**"
+      - "/auth/oauth/token"
+
+# 使用Euerka作为注册中心(客户端)
+# 默认注册中心地址格式：http://${hostname}:${port}/eureka/
+# 注册到需要登录认证的Euerka注册中心时的地址格式：http://${username}:${password}@${hostname}:${port}/eureka/
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://temp:123456@localhost:8001/eureka/
+#logging:
+#  level:
+#    org.springframework.cloud.gateway: debug
+# 使用zuul作为API网关
+#zuul:
+#  routes: # 给服务配置路由
+#    temp-admin:
+#      path: /tempAdmin/**
+#    temp-xx-service:
+#      path: /tempXxService/**
+#  ignored-services: temp-admin,temp-xx-service # 关闭默认路由配置
+#  prefix: /proxy # 给网关路由添加前缀
+#  sensitive-headers: Cookie,Set-Cookie,Authorization # 配置过滤敏感的请求头信息，设置为空就不会过滤
+#  add-host-header: true # 设置为true重定向是会添加host请求头
+# 禁用的过滤器配置格式:zuul.filterClassName.filterType.disable.true
+#  PreLogFilter:
+#    pre:
+#      disable: true # 禁用PreLogFilter过滤器
+# 查看Zuul中的路由信息
+# 通过访问http://localhost:8801/actuator/routes查看简单路由信息
+# 通过访问http://localhost:8801/actuator/routes/details查看详细路由信息：
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: 'routes'

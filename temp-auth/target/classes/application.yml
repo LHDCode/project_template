@@ -1,0 +1,8 @@
+server:
+  port: 8802
+spring:
+  application:
+    name: temp-auth
+  redis: # redis相关配置
+    password: powersi@redis # 有密码时设置
+

@@ -1,0 +1,4 @@
+# 启用的是dev环境的配置
+spring:
+  profiles:
+    active: dev
